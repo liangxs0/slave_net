@@ -280,22 +280,21 @@ void device_init(void)//设备初始化函数
 //设备的控制函数
 void my_equ_control(u8* ids,u8* my_control,u8 controy_type)
 {
-  u8 updata[1] = {0};
-  u8 len = 0 ;
-  if(my_device_id == 0x10)
-  {
-    if(my_control[0] == 0x01)
-    {
-      Servo_ON();
-      updata[0] = 0x01;
-    }else if(my_control[0] == 0x02)
-    {
-      Servo_OFF();
-      updata[0] = 0x02;
-    }
-    len = 1;
-    feedback(my_device_id,updata,len);
-  }
+	if(ids[0] == 0xFF && ids[1] == 0xFF && ids[2] == 0xFF	&& ids[3] == 0xFF	&& ids[4] == 0x12)
+	{
+		if(controy_type == 0xA4)
+		{
+			if(my_control[0] == 0x01)
+			{
+				Servo_ON();
+			}else if(my_control[0] == 0x00)
+			{
+				Servo_OFF();
+			}
+			serv[0] = my_control[0];
+		}
+		feedback(ids,serv,1);
+	}
 }
 
 #endif
@@ -310,6 +309,11 @@ void my_equ_control(u8* ids,u8* my_control,u8 controy_type)
 #include "fan.h"
 #include "Relay.h"
 
+u8 fan[1] = {0};
+u8 relay1[1] = {0};
+u8 relay2[1] = {0};
+u8 a49[3] = {0};
+
 void device_init(void)//设备初始化函数
 {
   Fan_Gpio_Init();
@@ -317,69 +321,78 @@ void device_init(void)//设备初始化函数
   A4988_Init();
 }
 //设备的控制函数
-void my_equ_control(u16 my_device_id,u8 my_control[ZIGBEE_BUFFER_LEN])
+void my_equ_control(u8* ids,u8* my_control,u8 controy_type)
 {
-  u8 updata[10] = {0};
-  u8 len = 0;
-  switch(my_device_id)
-  {
-    case 0x10://风扇
-      if(my_control[0] == 0x01)
-      {
-        FAN_Set = 1;
-        updata[0] = 0x01;
-      }else if(my_control[0] == 0x02)
-      {
-        FAN_Set = 0;
-        updata[0] = 0x02;
-      }
-      len = 1;
-      feedback(my_device_id,updata,len);
-      break;
-    case 0x20://继电器1
-      if(my_control[0] == 0x01)
-      {
-        Relay1_Set = 1;
-        updata[0] = 0x01;
-      }else if(my_control[0] == 0x02)
-      {
-        Relay1_Set = 0;
-        updata[0] = 0x02;
-      }
-      len = 1;
-      feedback(my_device_id,updata,len);
-      break;
-    case 0x30://继电器2
-      if(my_control[0] == 0x01)
-      {
-        Relay2_Set = 1;
-        updata[0] = 0x01;
-      }else if(my_control[0] == 0x02)
-      {
-        Relay2_Set = 0;
-        updata[0] = 0x02;
-      }
-      len = 1;
-      feedback(my_device_id,updata,len);
-      break;
-    case 0x40://步进电机
-      if(my_control[0] == 0x01)
-      {
-        A4988_DIR = 1;
-        Motor_Control(2000,380);
-        updata[0] = 0x01;
-      }else if(my_control[0] == 0x02)
-      {
-        A4988_DIR = 0;
-        Motor_Control(2000,380);
-        updata[0] = 0x02;
-      }
-      len = 1;
-      feedback(my_device_id,updata,len);
-      break;
-    default:
-      break;
-  }
+	
+	if(ids[0] == 0xFF && ids[1] == 0xFF && ids[2] == 0xFF	&& ids[3] == 0xFF	&& ids[4] == 0x13)
+	{
+		if(controy_type == 0xA4)
+		{
+			if(my_control[0] == 0x00)
+			{
+				FAN_Set = 0;
+				fan[0] = 0;
+			}else if(my_control[0] == 0x01)
+			{
+				FAN_Set = 1;
+				fan[0] = 1;
+			}
+		}
+		feedback(ids,fan,1);
+	}else	if(ids[0] == 0xFF && ids[1] == 0xFF && ids[2] == 0xFF	&& ids[3] == 0xFF	&& ids[4] == 0x14)
+	{
+		if(controy_type == 0xA4)
+		{
+			A4988_DIR = my_control[0];
+			if(A4988_DIR == a49[0])
+			{
+				if(((a49[1]<<8|a49[2]) + (my_control[1]<<8|my_control[2])) > 380)
+				{
+					Motor_Control(2000,380);
+					a49[1] = 380>>8;
+					a49[2] = 380&0xFF;
+				}else
+				{
+					Motor_Control(2000,((a49[1]<<8|a49[2]) + (my_control[1]<<8|my_control[2])));
+					a49[1] = ((a49[1]<<8|a49[2]) + (my_control[1]<<8|my_control[2]))>>8;
+					a49[2] = ((a49[1]<<8|a49[2]) + (my_control[1]<<8|my_control[2]))&0xFF;
+				}
+				a49[0] = 0;
+			}else{
+				if(((my_control[1]<<8|my_control[2]) >= (a49[1]<<8|a49[2])) && ((a49[1]<<8|a49[2])>0))
+				{
+					Motor_Control(2000,(a49[1]<<8|a49[2]));
+					a49[1] = 0;
+					a49[2] = 0;
+					
+				}else if(((my_control[1]<<8|my_control[2]) < (a49[1]<<8|a49[2])) && ((a49[1]<<8|a49[2])>0))
+				{
+					Motor_Control(2000,(my_control[1]<<8|my_control[2]));
+					a49[1] = ((a49[1]<<8|a49[2])-(my_control[1]<<8|my_control[2]))>>8;
+					a49[2] = ((a49[1]<<8|a49[2])-(my_control[1]<<8|my_control[2]))&0xFF;
+					
+				}
+				a49[0] = 1;
+			}
+			feedback(ids,a49,3);
+		}	
+	}else	if(ids[0] == 0xFF && ids[1] == 0xFF && ids[2] == 0xFF	&& ids[3] == 0xFF	&& ids[4] == 0x15)
+	{
+		if(controy_type == 0xA4)
+		{
+			Relay1_Set = my_control[0]?1:0;
+			relay1[0] = my_control[0];
+		}
+		feedback(ids,relay1,1);
+	}else	if(ids[0] == 0xFF && ids[1] == 0xFF && ids[2] == 0xFF	&& ids[3] == 0xFF	&& ids[4] == 0x16)
+	{
+		if(controy_type == 0xA4)
+		{
+			Relay2_Set = my_control[0]?1:0;
+			relay2[0] = my_control[0];
+		}
+		feedback(ids,relay2,1);
+	}
   
 }
 
@@ -400,6 +413,8 @@ void my_equ_control(u16 my_device_id,u8 my_control[ZIGBEE_BUFFER_LEN])
 #include "exti.h"
 #include "Debug_usart.h"
 
+u8 l_lock[1] = {0};
+
 void device_init(void)//设备初始化函数
 {
   
@@ -414,32 +429,18 @@ void device_init(void)//设备初始化函数
  
 }
 //设备的控制函数
-void my_equ_control(u16 my_device_id,u8 my_control[ZIGBEE_BUFFER_LEN])
+void my_equ_control(u8* ids,u8* my_control,u8 controy_type)
 {
-  u8 updata[1] = {0};
-  u8 len = 0;
-  if(my_device_id == 0x10)
-  {
-    if(my_control[0] == 0x01)
-    {
-      LOCK_CONTROL = 0x01;
-      delayMs(500);
-      delayMs(500);
-      LOCK_CONTROL = 0x00;
-    }else if(my_control[0] == 0x02)
-    {
-      LOCK_CONTROL = 0x00;
-    }
-    if(LOCK_CONTROL == 0)
-      updata[0] = 0x02;
-    else
-      updata[0] = 0x01;
-    len = 1;
-    feedback(my_device_id,updata,len);
-  }
+	if(ids[0] == 0xFF && ids[1] == 0xFF && ids[2] == 0xFF	&& ids[3] == 0xFF	&& ids[4] == 0x17)
+	{
+		if(controy_type == 0xA4)
+		{
+			LOCK_CONTROL = my_control[0]?1:0;
+			l_lock[0] = my_control[0];
+		}
+		feedback(ids, l_lock, 1);
+	}
 }
-
-
 #endif
 
 //数据的上发函数
@@ -468,4 +469,3 @@ void feedback(u8* id,u8* my_control,u8 control_len)
 	zigbee_send(10+control_len,updata_buffer);
 	mode_485_rt = 0;
 }
-

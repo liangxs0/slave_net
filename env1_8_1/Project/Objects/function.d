@@ -11,4 +11,10 @@
 .\objects\function.o: ..\hardware\zigbee_usart\ZigBee_usart.h
 .\objects\function.o: ..\device\sys.h
 .\objects\function.o: ..\app\config.h
-.\objects\function.o: ..\hardware\security\security_windows.h
+.\objects\function.o: ..\hardware\IIC_Master\iic_master.h
+.\objects\function.o: ..\hardware\Lock\lock.h
+.\objects\function.o: ..\hardware\RFID\rc522.h
+.\objects\function.o: ..\hardware\mini12864\JXL12864G-086.h
+.\objects\function.o: ..\hardware\figure_print\figure_print.h
+.\objects\function.o: ..\hardware\EXIT\exti.h
+.\objects\function.o: ..\hardware\debug-usart\Debug_usart.h
