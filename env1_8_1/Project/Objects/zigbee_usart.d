@@ -1,0 +1,11 @@
+.\objects\zigbee_usart.o: ..\hardware\zigbee_usart\ZigBee_usart.c
+.\objects\zigbee_usart.o: ..\hardware\zigbee_usart\ZigBee_usart.h
+.\objects\zigbee_usart.o: ..\system\stm32f10x_map.h
+.\objects\zigbee_usart.o: ..\system\stm32f10x_conf.h
+.\objects\zigbee_usart.o: ..\system\stm32f10x_type.h
+.\objects\zigbee_usart.o: ..\system\cortexm3_macro.h
+.\objects\zigbee_usart.o: ..\device\sys.h
+.\objects\zigbee_usart.o: ..\system\stm32f10x_nvic.h
+.\objects\zigbee_usart.o: ..\system\jpstm32_gpio.h
+.\objects\zigbee_usart.o: ..\system\jpstm32_common.h
+.\objects\zigbee_usart.o: ..\system\jpstm32_sysclk.h

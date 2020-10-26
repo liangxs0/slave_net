@@ -1,0 +1,14 @@
+.\objects\analysis.o: ..\app\analysis.c
+.\objects\analysis.o: ..\app\analysis.h
+.\objects\analysis.o: ..\hardware\zigbee_usart\ZigBee_usart.h
+.\objects\analysis.o: ..\system\stm32f10x_map.h
+.\objects\analysis.o: ..\system\stm32f10x_conf.h
+.\objects\analysis.o: ..\system\stm32f10x_type.h
+.\objects\analysis.o: ..\system\cortexm3_macro.h
+.\objects\analysis.o: ..\device\sys.h
+.\objects\analysis.o: ..\system\stm32f10x_nvic.h
+.\objects\analysis.o: ..\system\jpstm32_gpio.h
+.\objects\analysis.o: ..\system\jpstm32_common.h
+.\objects\analysis.o: ..\app\function.h
+.\objects\analysis.o: ..\system\jpstm32_sysclk.h
+.\objects\analysis.o: ..\app\config.h

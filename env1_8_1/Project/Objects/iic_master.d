@@ -1,0 +1,10 @@
+.\objects\iic_master.o: ..\hardware\IIC_Master\iic_master.c
+.\objects\iic_master.o: ..\hardware\IIC_Master\iic_master.h
+.\objects\iic_master.o: ..\device\sys.h
+.\objects\iic_master.o: ..\system\stm32f10x_map.h
+.\objects\iic_master.o: ..\system\stm32f10x_conf.h
+.\objects\iic_master.o: ..\system\stm32f10x_type.h
+.\objects\iic_master.o: ..\system\cortexm3_macro.h
+.\objects\iic_master.o: ..\system\stm32f10x_nvic.h
+.\objects\iic_master.o: ..\system\jpstm32_sysclk.h
+.\objects\iic_master.o: ..\system\jpstm32_common.h

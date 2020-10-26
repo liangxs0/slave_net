@@ -1,0 +1,12 @@
+.\objects\rc522.o: ..\hardware\RFID\rc522.c
+.\objects\rc522.o: ..\device\sys.h
+.\objects\rc522.o: ..\system\stm32f10x_map.h
+.\objects\rc522.o: ..\system\stm32f10x_conf.h
+.\objects\rc522.o: ..\system\stm32f10x_type.h
+.\objects\rc522.o: ..\system\cortexm3_macro.h
+.\objects\rc522.o: ..\system\stm32f10x_nvic.h
+.\objects\rc522.o: ..\hardware\RFID\rc522.h
+.\objects\rc522.o: ..\system\jpstm32_gpio.h
+.\objects\rc522.o: ..\system\jpstm32_common.h
+.\objects\rc522.o: F:\Keil5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\rc522.o: ..\device\delay.h
