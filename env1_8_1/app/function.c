@@ -280,8 +280,6 @@ void device_init(void)//设备初始化函数
 //设备的控制函数
 void my_equ_control(u8* ids,u8* my_control,u8 controy_type)
 {
-	
-	
   u8 updata[1] = {0};
   u8 len = 0 ;
   if(my_device_id == 0x10)
